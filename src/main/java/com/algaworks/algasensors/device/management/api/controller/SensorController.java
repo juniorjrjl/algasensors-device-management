@@ -1,6 +1,7 @@
 package com.algaworks.algasensors.device.management.api.controller;
 
 import com.algaworks.algasensors.device.management.api.client.SensorMonitoringClient;
+import com.algaworks.algasensors.device.management.api.model.SensorDetailResponse;
 import com.algaworks.algasensors.device.management.api.model.SensorFoundResponse;
 import com.algaworks.algasensors.device.management.api.model.SensorInsertRequest;
 import com.algaworks.algasensors.device.management.api.model.SensorInsertedResponse;
@@ -117,6 +118,22 @@ public class SensorController {
                 entity.getModel(),
                 entity.getEnabled()
         );
+    }
+
+    @GetMapping("{id}/detail")
+    SensorDetailResponse findByIdWithDetail(@PathVariable final TSID id){
+        var entity = find(id);
+        var sensor = new SensorFoundResponse(
+                entity.getId().getValue(),
+                entity.getName(),
+                entity.getIp(),
+                entity.getLocation(),
+                entity.getProtocol(),
+                entity.getModel(),
+                entity.getEnabled()
+        );
+        var monitoring = sensorMonitoringClient.getDetail(id);
+        return new SensorDetailResponse(sensor, monitoring);
     }
 
     @GetMapping
